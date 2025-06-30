@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clock</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e0eafc, #8ab6f4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #050065;
+    }
+
+    h2, h3 {
+      margin-bottom: 15px;
+      color: #222;
+    }
+
+    /* Digital clock */
+    #clock {
+      font-size: 2.5rem;
+      background-color: #fff;
+      padding: 10px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+    }
+
+    /* Analog clock container */
+    .clock {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      border: 10px solid #333;
+      border-radius: 50%;
+      background: white;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Center dot */
+    .center {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #333;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+
+    /* Clock hands */
+    .hand {
+      position: absolute;
+      width: 50%;
+      background: #000000;
+      top: 50%;
+      right: 25%;
+      transform-origin: 100%;
+      transform: translateX(-50%) rotate(90deg);
+      transition: all 0.05s ease-in-out;
+    }
+
+    .hand.hour {
+      height: 4px;
+      background: #222;
+      z-index: 3;
+    }
+
+    .hand.minute {
+      height: 3px;
+      background: #555;
+      z-index: 2;
+    }
+
+    .hand.second {
+      height: 2px;
+      background: crimson;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <h2>⏰ Real-Time Clock</h2>
+
+  <h3>Digital Clock</h3>
+  <div id="clock">--:--:-- --</div>
+
+  <h3>Analog Clock</h3>
+  <div class="clock">
+    <div class="hand hour" id="hourHand"></div>
+    <div class="hand minute" id="minuteHand"></div>
+    <div class="hand second" id="secondHand"></div>
+    <div class="center"></div>
+  </div>
+
+  <script>
+    const clock = document.querySelector("#clock");
+
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      hours = hours.toString().padStart(2, '0');
+
+      clock.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const hourHand = document.getElementById('hourHand');
+    const minuteHand = document.getElementById('minuteHand');
+    const secondHand = document.getElementById('secondHand');
+
+    function updateAnalogClock() {
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const minutes = now.getMinutes();
+      const hours = now.getHours();
+
+      const secondDeg = seconds * 6;
+      const minuteDeg = minutes * 6 + seconds * 0.1;
+      const hourDeg = (hours % 12) * 30 + minutes * 0.5;
+
+      secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+      minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+      hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+    }
+
+    setInterval(updateAnalogClock, 1000);
+    updateAnalogClock();
+  </script>
+</body>
+</html>
